@@ -8,7 +8,7 @@ require("dotenv").config()
 //middlewares
 app.use(express.static("public"))
 
-app.set("views", __dirname+"views")
+app.set("views", __dirname+"/views")
 app.set("view engine", "hbs")
 
 hbs.registerPartials(__dirname + "/views/partials")
@@ -16,6 +16,7 @@ app.use(express.urlencoded({extended:true}))
 
 connectDB()
 //rutas
+app.use("/auth", require("./routes/auth"))
 app.use("/users", require("./routes/users"))
 app.use("/", require("./routes/index"))
 
