@@ -48,13 +48,13 @@ exports.register = async (req, res)=>{
         email,
         passwordEncriptado
     })
-    
+    console.log(newUser)
     res.redirect("/") //redireccionamos al inicio
        
    } catch (error) {
       console.log(error)
       res.status(500).render("auth/signup",{
-          errorMessage: "Hubo un problema en el servidor"
+          errorMessage: "Hubo un error con la validez de tu correo. Intenta nuevamente. No dejes espacios y usa minúsculas."
       }) //estatus code 500, se lanza cuando la verificacion en el try falló
 
    }
