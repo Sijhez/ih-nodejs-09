@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
         trim:true    //sin espacios vacios
     },
     passwordEncriptado: String
-})
+}) 
 
 //Modelo
 const User = mongoose.model("User", userSchema)

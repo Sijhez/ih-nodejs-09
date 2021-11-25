@@ -61,3 +61,69 @@ exports.register = async (req, res)=>{
 
    
 }
+
+exports.viewLogin = async(req, res) =>{
+    res.render("auth/login")
+}
+
+exports.login = async(req, res)=>{
+    try {
+        //1. obtención de datos del formulario
+      const email = req.body.email
+      const password = req.body.password
+        
+      //   console.log (email, password)
+     
+    //2. validación de usuario encontrado en BD
+    const foundUser = await User.findOne({ email }) //verificacion por email
+    //console.log(foundUser)
+
+   if(!foundUser){
+       res.render("auth/login",{
+           errorMessage: "Email o contraseña sin coincidencias"
+       })
+       return
+   }
+
+    //3. Validacion de contraseña :3
+    //comparar la contraseña del formulario vs la contraseña de la base de datos
+
+    const verifiedPass = await bcryptjs.compareSync(password, foundUser.passwordEncriptado)
+     
+    if(!verifiedPass){
+        res.render("auth/login",{
+           errorMessage: "Email o contraseña errónea. Intenta nuevamente" 
+        })
+        return
+    }
+    console.log("verifiedPass:", verifiedPass)
+      
+    //4. (prox) Generación de la sesión por medio de cookie
+    //PERSISTENCIA DE IDENTIDAD: uso de archivo session.js
+   req.session.currentUser = {
+       _id: foundUser._id,
+       username: foundUser.username,
+       email: foundUser.email,
+       mensaje: "LO LOGRAMOS CARAJO XD"
+   }
+    //5. Redireccionar al home
+    res.redirect("/users/profile")
+} catch (error) {
+        console.log(error)
+}
+}
+
+exports.logout = async (req, res) => {
+
+	req.session.destroy(err => {
+
+		if(err){
+			console.log(err)
+			return next(err)
+		}
+
+		res.redirect("/")
+
+	})
+
+}
